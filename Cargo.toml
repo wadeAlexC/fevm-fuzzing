@@ -1,0 +1,12 @@
+[package]
+name = "fevm-fuzz"
+version = "0.1.0"
+build = "build.rs"
+edition = "2021"
+
+[dependencies]
+libc = "0.2.0"
+# lldb = "0.0.11"
+# fvm_shared = { path = "../ref-fvm/shared" }
+fil_actor_evm = { path = "../builtin-actors/actors/evm" }
+honggfuzz = "0.5"
