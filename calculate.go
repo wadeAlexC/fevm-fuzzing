@@ -421,6 +421,73 @@ func Sar(bufA C.buf_t, lenA C.int, bufB C.buf_t, lenB C.int, out **C.uint8_t, si
 	return 0
 }
 
+//export AddMod
+func AddMod(
+	bufA C.buf_t, lenA C.int,
+	bufB C.buf_t, lenB C.int,
+	bufC C.buf_t, lenC C.int,
+	out **C.uint8_t, size *C.int,
+) (res C.int) {
+	defer func() {
+		if rerr := recover(); rerr != nil {
+			res = -1
+		}
+	}()
+
+	arrA := toBuf(bufA, lenA)
+	arrB := toBuf(bufB, lenB)
+	arrC := toBuf(bufC, lenC)
+
+	// Calculate result
+	a := uint256.NewInt(0).SetBytes(arrA)
+	b := uint256.NewInt(0).SetBytes(arrB)
+	c := uint256.NewInt(0).SetBytes(arrC)
+	resInt := uint256.NewInt(0)
+	if c.IsZero() {
+		resInt = resInt.Clear()
+	} else {
+		resInt = resInt.AddMod(a, b, c)
+	}
+	result := resInt.Bytes32()
+
+	// Write result to pointer
+	*out = (C.buf_t)(C.CBytes(result[:]))
+	*size = C.int(len(result))
+
+	return 0
+}
+
+//export MulMod
+func MulMod(
+	bufA C.buf_t, lenA C.int,
+	bufB C.buf_t, lenB C.int,
+	bufC C.buf_t, lenC C.int,
+	out **C.uint8_t, size *C.int,
+) (res C.int) {
+	defer func() {
+		if rerr := recover(); rerr != nil {
+			res = -1
+		}
+	}()
+
+	arrA := toBuf(bufA, lenA)
+	arrB := toBuf(bufB, lenB)
+	arrC := toBuf(bufC, lenC)
+
+	// Calculate result
+	a := uint256.NewInt(0).SetBytes(arrA)
+	b := uint256.NewInt(0).SetBytes(arrB)
+	c := uint256.NewInt(0).SetBytes(arrC)
+	resInt := uint256.NewInt(0).MulMod(a, b, c)
+	result := resInt.Bytes32()
+
+	// Write result to pointer
+	*out = (C.buf_t)(C.CBytes(result[:]))
+	*size = C.int(len(result))
+
+	return 0
+}
+
 func toBuf(buf C.buf_t, length C.int) []byte {
 	return C.GoBytes(unsafe.Pointer(buf), C.int(length))
 }
