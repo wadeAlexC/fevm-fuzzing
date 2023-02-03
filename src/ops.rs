@@ -53,4 +53,31 @@ impl Op {
         ];
         OPS.iter()
     }
+
+    // "high value" iter
+    // this iter just returns the more complex operations
+    // so we can focus the fuzzing where it's needed
+    pub fn hv_iter() -> Iter<'static, Op> {
+        const OPS: [Op; 9] = [
+            // ADD,
+            // SUB,
+            // MUL,
+            DIV,
+            SDIV,
+            MOD,
+            SMOD,
+            EXP,
+            SIGNEXT,
+            // LT,
+            // GT,
+            // EQ,
+            // BYTE,
+            // SHL,
+            // SHR,
+            SAR,
+            ADDMOD,
+            MULMOD,
+        ];
+        OPS.iter()
+    }
 }

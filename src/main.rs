@@ -30,13 +30,12 @@ fn main() {
             match panic::catch_unwind(|| {
                 // For each arithmetic operation, call both FEVM and Geth arithmetic
                 // methods and compare the results against each other
-                for op in Op::iterator() {
+                for op in Op::hv_iter() {
                     match try_op(fuzz_values, op) {
                         Ok(()) => continue,
-                        Err(e) => return Err(format!("Got err with op {:?}. Err: {}", op, e)),
+                        Err(e) => panic!("Got err with op {:?}. Err: {}", op, e),
                     }
                 }
-                Ok(())
             }) {
                 Ok(_) => return,
                 Err(err) => {
